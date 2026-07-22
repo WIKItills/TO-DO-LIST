@@ -13,11 +13,11 @@ const generateToken = (id) => {
 // @access  Public
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, securityQuestion, securityAnswer } = req.body;
 
     // Validation
-    if (!name || !email || !password || !role) {
-      return res.status(400).json({ success: false, message: 'Please fill in all fields' });
+    if (!name || !email || !password || !role || !securityQuestion || !securityAnswer) {
+      return res.status(400).json({ success: false, message: 'Please fill in all fields including security question' });
     }
 
     if (!['student', 'teacher', 'admin'].includes(role)) {
@@ -36,6 +36,8 @@ const register = async (req, res) => {
       email,
       password,
       role,
+      securityQuestion,
+      securityAnswer,
     });
 
     if (user) {
@@ -132,9 +134,68 @@ const getTeachers = async (req, res) => {
   }
 };
 
+// @desc    Get user security question by email
+// @route   POST /api/auth/forgot-password-question
+// @access  Public
+const getSecurityQuestion = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please enter your email address' });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'No registered user found with this email' });
+    }
+
+    res.status(200).json({ success: true, securityQuestion: user.securityQuestion });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Verify security question and reset password
+// @route   POST /api/auth/reset-password-question
+// @access  Public
+const resetPasswordWithQuestion = async (req, res) => {
+  try {
+    const { email, securityAnswer, newPassword } = req.body;
+
+    if (!email || !securityAnswer || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Please provide all fields' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    // Retrieve user and explicitly select securityAnswer
+    const user = await User.findOne({ email }).select('+securityAnswer');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Check security answer case-insensitively
+    if (user.securityAnswer.toLowerCase().trim() !== securityAnswer.toLowerCase().trim()) {
+      return res.status(400).json({ success: false, message: 'Incorrect answer to security question' });
+    }
+
+    // Set new password (triggers pre-save hashing hook)
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ success: true, message: 'Password reset successfully!' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
   getProfile,
   getTeachers,
+  getSecurityQuestion,
+  resetPasswordWithQuestion,
 };

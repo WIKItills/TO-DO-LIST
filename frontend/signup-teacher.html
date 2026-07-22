@@ -50,6 +50,22 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <label for="teacherSecurityQuestion" class="form-label">Security Question (For Password Reset)</label>
+          <select id="teacherSecurityQuestion" class="form-input" required>
+            <option value="" disabled selected>Select a question...</option>
+            <option value="What is your first school's name?">What is your first school's name?</option>
+            <option value="What is the name of your favorite pet?">What is the name of your favorite pet?</option>
+            <option value="In what city were you born?">In what city were you born?</option>
+            <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="teacherSecurityAnswer" class="form-label">Security Answer</label>
+          <input type="text" id="teacherSecurityAnswer" class="form-input" placeholder="e.g. Oakridge School" required autocomplete="off">
+        </div>
+
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; background: var(--color-success); border-color: var(--color-success);">
           <i class="fas fa-user-plus"></i> Register Teacher Account
         </button>

@@ -12,12 +12,16 @@ const seedUsers = async () => {
         email: 'vishantgiri12@gmail.com',
         password: '@Vishantgiri001',
         role: 'admin',
+        securityQuestion: "What is your first school's name?",
+        securityAnswer: "school",
       });
       console.log('Default admin seeded successfully!');
-    } else if (adminExists.role !== 'admin') {
+    } else if (adminExists.role !== 'admin' || !adminExists.securityQuestion) {
       console.log('Upgrading existing vishantgiri12@gmail.com account to ADMIN role...');
       adminExists.role = 'admin';
       adminExists.password = '@Vishantgiri001';
+      adminExists.securityQuestion = "What is your first school's name?";
+      adminExists.securityAnswer = "school";
       await adminExists.save();
       console.log('Account successfully upgraded on startup!');
     }

@@ -21,8 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('studentEmail').value.trim();
       const password = document.getElementById('studentPassword').value;
       const confirmPassword = document.getElementById('studentConfirmPassword').value;
+      const securityQuestion = document.getElementById('studentSecurityQuestion').value;
+      const securityAnswer = document.getElementById('studentSecurityAnswer').value.trim();
 
-      if (!name || !email || !password || !confirmPassword) {
+      if (!name || !email || !password || !confirmPassword || !securityQuestion || !securityAnswer) {
         return showNotification('Please fill in all fields', 'warning');
       }
 
@@ -33,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const data = await apiFetch('/auth/register', {
           method: 'POST',
-          body: { name, email, password, role: 'student' }
+          body: { name, email, password, role: 'student', securityQuestion, securityAnswer }
         });
 
         if (data.success) {
@@ -59,8 +61,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = document.getElementById('teacherEmail').value.trim();
       const password = document.getElementById('teacherPassword').value;
       const confirmPassword = document.getElementById('teacherConfirmPassword').value;
+      const securityQuestion = document.getElementById('teacherSecurityQuestion').value;
+      const securityAnswer = document.getElementById('teacherSecurityAnswer').value.trim();
 
-      if (!name || !email || !password || !confirmPassword) {
+      if (!name || !email || !password || !confirmPassword || !securityQuestion || !securityAnswer) {
         return showNotification('Please fill in all fields', 'warning');
       }
 
@@ -71,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         const data = await apiFetch('/auth/register', {
           method: 'POST',
-          body: { name, email, password, role: 'teacher' }
+          body: { name, email, password, role: 'teacher', securityQuestion, securityAnswer }
         });
 
         if (data.success) {

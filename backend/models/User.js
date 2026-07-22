@@ -29,6 +29,16 @@ const UserSchema = new mongoose.Schema({
     enum: ['student', 'teacher', 'admin'],
     default: 'student',
   },
+  securityQuestion: {
+    type: String,
+    required: [true, 'Please select a security question'],
+  },
+  securityAnswer: {
+    type: String,
+    required: [true, 'Please provide an answer to the security question'],
+    trim: true,
+    select: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
