@@ -87,4 +87,20 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Bind password toggle visibility helper
+  document.querySelectorAll('.toggle-password').forEach(toggle => {
+    toggle.addEventListener('click', (e) => {
+      const input = e.currentTarget.parentElement.querySelector('input');
+      if (input.type === 'password') {
+        input.type = 'text';
+        e.currentTarget.classList.remove('fa-eye');
+        e.currentTarget.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        e.currentTarget.classList.remove('fa-eye-slash');
+        e.currentTarget.classList.add('fa-eye');
+      }
+    });
+  });
 });

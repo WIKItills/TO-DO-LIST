@@ -30,7 +30,10 @@
         
         <div class="form-group">
           <label for="loginPassword" class="form-label">Password</label>
-          <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          <div class="password-wrapper" style="position: relative; width: 100%;">
+            <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required autocomplete="current-password" style="padding-right: 40px; width: 100%;">
+            <i class="fas fa-eye toggle-password" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-muted); z-index: 10;"></i>
+          </div>
         </div>
 
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
