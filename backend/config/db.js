@@ -22,35 +22,7 @@ const seedUsers = async () => {
       console.log('Account successfully upgraded on startup!');
     }
 
-    // 2. Seed other standard demo accounts if database is completely empty
-    const userCount = await User.countDocuments();
-    if (userCount <= 1) { // 1 because the admin might have just been created
-      const aliceExists = await User.findOne({ email: 'alice@school.com' });
-      if (!aliceExists) {
-        console.log('Seeding demo school accounts...');
-        await User.create([
-          {
-            name: 'Teacher Alice',
-            email: 'alice@school.com',
-            password: 'password123',
-            role: 'teacher',
-          },
-          {
-            name: 'Teacher Bob',
-            email: 'bob@school.com',
-            password: 'password123',
-            role: 'teacher',
-          },
-          {
-            name: 'Student Charlie',
-            email: 'charlie@school.com',
-            password: 'password123',
-            role: 'student',
-          },
-        ]);
-        console.log('Demo accounts seeded successfully!');
-      }
-    }
+
   } catch (error) {
     console.error('Error seeding database:', error.message);
   }
