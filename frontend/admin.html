@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super-Admin Dashboard | TaskVerify</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="brand">
+      <i class="fas fa-check-double"></i> TaskVerify
+    </div>
+    <div class="nav-user">
+      <div class="user-info-badge">
+        <i class="fas fa-user-shield"></i>
+        <span id="userName">Admin</span>
+        <span class="user-role-tag admin">Admin</span>
+      </div>
+      <button class="btn btn-secondary btn-icon" id="btnLogout" title="Logout">
+        <i class="fas fa-sign-out-alt"></i>
+      </button>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    
+    <!-- Statistics Summary Row -->
+    <div class="metrics-row">
+      <div class="metric-card glass-panel secondary">
+        <div class="metric-info">
+          <p>Total Registered Accounts</p>
+          <h3 id="statTotalUsers">0</h3>
+        </div>
+        <i class="fas fa-users-cog metric-icon"></i>
+      </div>
+      
+      <div class="metric-card glass-panel info">
+        <div class="metric-info">
+          <p>Students / Teachers</p>
+          <h3 id="statRoleRatio">0 / 0</h3>
+        </div>
+        <i class="fas fa-users metric-icon"></i>
+      </div>
+
+      <div class="metric-card glass-panel secondary">
+        <div class="metric-info">
+          <p>Total System Tasks</p>
+          <h3 id="statTotalTasks">0</h3>
+        </div>
+        <i class="fas fa-clipboard-list metric-icon"></i>
+      </div>
+
+      <div class="metric-card glass-panel success">
+        <div class="metric-info">
+          <p>Proof Verification Rate</p>
+          <h3 id="statVerifyRate">0%</h3>
+        </div>
+        <i class="fas fa-percent metric-icon"></i>
+      </div>
+    </div>
+
+    <!-- Admin Master Tabs -->
+    <div class="task-filters" style="justify-content: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 25px;">
+      <span class="filter-pill active" id="tabUsers" data-tab="users">
+        <i class="fas fa-user-friends"></i> System Accounts (<span id="userCountBadge">0</span>)
+      </span>
+      <span class="filter-pill" id="tabTasks" data-tab="tasks">
+        <i class="fas fa-tasks"></i> Global Task Stream (<span id="taskCountBadge">0</span>)
+      </span>
+    </div>
+
+    <!-- Users Panel -->
+    <section id="usersPanel" class="glass-panel" style="padding: 2rem;">
+      <div class="dashboard-panel-header" style="border: none; margin-bottom: 1.5rem;">
+        <h2><i class="fas fa-users" style="color: var(--color-primary);"></i> Registered Accounts Log</h2>
+        <input type="text" id="userSearch" class="form-input" placeholder="Search accounts by name or email..." style="max-width: 300px; padding: 6px 12px; font-size: 0.85rem;">
+      </div>
+      
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>User ID</th>
+              <th>Full Name</th>
+              <th>Email Address</th>
+              <th>Role</th>
+              <th>Joined Date</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            <!-- Populated dynamically -->
+            <tr>
+              <td colspan="5" style="text-align: center; color: var(--text-muted);">Fetching accounts log...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tasks Panel -->
+    <section id="tasksPanel" class="glass-panel" style="padding: 2rem; display: none;">
+      <div class="dashboard-panel-header" style="border: none; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 15px;">
+        <h2><i class="fas fa-stream" style="color: var(--color-primary);"></i> System Tasks Audit Log</h2>
+        <div style="display: flex; gap: 10px; flex: 1; justify-content: flex-end; min-width: 300px;">
+          <input type="text" id="taskSearch" class="form-input" placeholder="Search tasks or student name..." style="max-width: 250px; padding: 6px 12px; font-size: 0.85rem;">
+          <select id="taskStatusFilter" class="form-input" style="max-width: 150px; padding: 6px 12px; font-size: 0.85rem;">
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="submitted">Submitted</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Task Title</th>
+              <th>Student Creator</th>
+              <th>Assigned Teacher</th>
+              <th>Status</th>
+              <th>Proof image</th>
+              <th>Last Updated</th>
+            </tr>
+          </thead>
+          <tbody id="tasksTableBody">
+            <!-- Populated dynamically -->
+            <tr>
+              <td colspan="6" style="text-align: center; color: var(--text-muted);">Fetching tasks logs...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Admin Photo Proof Viewer Modal (Supports Multiple Proof Galleries) -->
+  <div id="adminProofModal" class="modal-backdrop">
+    <div class="modal-container glass-panel" style="max-width: 550px;">
+      <div class="modal-header">
+        <h3 id="adminModalTitle" style="font-weight: 700;">Audit Photo Proofs</h3>
+        <button class="modal-close" data-dismiss="modal">&times;</button>
+      </div>
+      <div id="adminViewerImagesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; margin-bottom: 1.5rem; max-height: 380px; overflow-y: auto; padding: 15px; background: rgba(0, 0, 0, 0.4); border-radius: var(--border-radius-sm); border: 1px solid var(--border-color);">
+        <!-- Dynamically populated grid of images -->
+      </div>
+      <div style="display: flex; justify-content: flex-end;">
+        <button class="btn btn-secondary" data-dismiss="modal">Close Audit</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full Image Viewer Modal -->
+  <div id="fullImageModal" class="modal-backdrop" style="z-index: 2000;">
+    <div class="modal-container glass-panel" style="max-width: 90%; width: auto; max-height: 90vh; padding: 15px; display: flex; flex-direction: column; align-items: center; position: relative;">
+      <button class="modal-close" id="closeFullImageBtn" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: none; cursor: pointer; font-size: 1.25rem;">&times;</button>
+      <img id="fullImageViewerImg" src="" alt="Full view" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: var(--border-radius-sm); margin-top: 15px;">
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

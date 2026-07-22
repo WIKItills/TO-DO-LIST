@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Registration | TaskVerify</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  
+  <div class="auth-wrapper">
+    <div class="auth-container glass-panel" style="max-width: 420px;">
+      
+      <div class="auth-header">
+        <div class="brand" style="justify-content: center; margin-bottom: 0.5rem;">
+          <i class="fas fa-check-double"></i> TaskVerify
+        </div>
+        <h1 class="auth-title" style="font-size: 1.5rem; color: var(--color-success);">
+          <i class="fas fa-chalkboard-teacher"></i> Teacher Sign Up
+        </h1>
+        <p class="auth-subtitle">Create a teacher profile to verify achievements</p>
+      </div>
+
+      <!-- Teacher Register Form -->
+      <form id="signupTeacherForm" class="auth-form">
+        <div class="form-group">
+          <label for="teacherName" class="form-label">Full Name</label>
+          <input type="text" id="teacherName" class="form-input" placeholder="e.g. Professor Alice" required autocomplete="name">
+        </div>
+
+        <div class="form-group">
+          <label for="teacherEmail" class="form-label">Email Address</label>
+          <input type="email" id="teacherEmail" class="form-input" placeholder="e.g. alice@school.com" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label for="teacherPassword" class="form-label">Password</label>
+          <input type="password" id="teacherPassword" class="form-input" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+
+        <div class="form-group">
+          <label for="teacherConfirmPassword" class="form-label">Confirm Password</label>
+          <input type="password" id="teacherConfirmPassword" class="form-input" placeholder="••••••••" required autocomplete="new-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem; background: var(--color-success); border-color: var(--color-success);">
+          <i class="fas fa-user-plus"></i> Register Teacher Account
+        </button>
+      </form>
+
+      <!-- Back to login -->
+      <div style="text-align: center; margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Already have an account? <a href="index.html" style="color: var(--color-success); text-decoration: none; font-weight: 600;">Sign In</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/signup.js"></script>
+</body>
+</html>
