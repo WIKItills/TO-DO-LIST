@@ -54,7 +54,11 @@ const generalLimiter = rateLimit({
 app.use('/api/', generalLimiter);
 
 // Serve uploads folder statically for local proof fallback
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const os = require('os');
+const uploadsStaticDir = process.env.VERCEL || process.env.NODE_ENV === 'production'
+  ? path.join(os.tmpdir(), 'uploads')
+  : path.join(__dirname, 'uploads');
+app.use('/uploads', express.static(uploadsStaticDir));
 
 // Serve static frontend files
 app.use(express.static(path.join(__dirname, '../frontend')));
