@@ -1,4 +1,4 @@
-# TaskVerify
+# Daily Task
 
 A secure, role-based task tracking and verification system for students, teachers, and admins.
 
