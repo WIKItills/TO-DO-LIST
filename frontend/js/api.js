@@ -132,7 +132,6 @@ function showNotification(message, type = 'info') {
   }, 3500);
 }
 
-// Redirect helpers if wrong role
 function redirectOnRole() {
   const user = auth.getUser();
   if (!user) {
@@ -143,9 +142,9 @@ function redirectOnRole() {
   }
 
   const currentPath = window.location.pathname;
-  if (user.role === 'student' && !currentPath.includes('student.html')) {
+  if (user.role === 'student' && (currentPath.includes('signup') || !currentPath.includes('student.html'))) {
     window.location.href = '/student.html';
-  } else if (user.role === 'teacher' && !currentPath.includes('teacher.html')) {
+  } else if (user.role === 'teacher' && (currentPath.includes('signup') || !currentPath.includes('teacher.html'))) {
     window.location.href = '/teacher.html';
   } else if (user.role === 'admin' && !currentPath.includes('admin.html')) {
     window.location.href = '/admin.html';
