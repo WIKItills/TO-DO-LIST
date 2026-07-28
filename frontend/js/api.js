@@ -1,5 +1,10 @@
-// Client API Helper
+// Theme Initialization (Runs immediately to prevent theme flashing on load)
+(function() {
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+})();
 
+// Client API Helper
 const API_BASE = '/api';
 
 // Authentication Storage Helpers
@@ -150,3 +155,34 @@ function redirectOnRole() {
     window.location.href = '/admin.html';
   }
 }
+
+// Bind Theme Toggle dynamically on every page load
+document.addEventListener('DOMContentLoaded', () => {
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    const icon = themeToggle.querySelector('i');
+    
+    const updateToggleIcon = (theme) => {
+      if (theme === 'light') {
+        icon.className = 'fas fa-moon';
+        icon.style.color = '#4b5563'; // dark slate color for moon
+      } else {
+        icon.className = 'fas fa-sun';
+        icon.style.color = '#f59e0b'; // glowing amber color for sun
+      }
+    };
+
+    // Set initial icon state
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    updateToggleIcon(currentTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+      const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateToggleIcon(newTheme);
+    });
+  }
+});
