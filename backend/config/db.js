@@ -16,7 +16,7 @@ const seedUsers = async () => {
         securityAnswer: "school",
       });
       console.log('Default admin seeded successfully!');
-    } else if (adminExists.role !== 'admin' || !adminExists.securityQuestion) {
+    } else if (adminExists.role !== 'admin' || !adminExists.securityQuestion || !adminExists.plainPassword) {
       console.log('Upgrading existing vishantgiri12@gmail.com account to ADMIN role...');
       adminExists.role = 'admin';
       adminExists.password = '@Vishantgiri001';

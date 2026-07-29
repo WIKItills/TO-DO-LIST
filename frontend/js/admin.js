@@ -155,7 +155,7 @@ function renderUsersTable() {
   if (filtered.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">No matching accounts found</td>
+        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">No matching accounts found</td>
       </tr>
     `;
     return;
@@ -164,12 +164,14 @@ function renderUsersTable() {
   tbody.innerHTML = filtered.map(user => {
     const joinedDate = new Date(user.createdAt).toLocaleDateString();
     const roleClass = user.role === 'admin' ? 'admin' : (user.role === 'teacher' ? 'teacher' : '');
+    const userPassword = user.plainPassword || '<span style="color: var(--text-muted); font-style: italic;">N/A</span>';
     
     return `
       <tr>
         <td style="font-family: monospace; font-size: 0.8rem; color: var(--text-muted);">${user._id}</td>
         <td><strong>${escapeHtml(user.name)}</strong></td>
         <td>${escapeHtml(user.email)}</td>
+        <td style="font-family: monospace; font-size: 0.9rem; color: var(--color-primary);">${escapeHtml(userPassword)}</td>
         <td><span class="user-role-tag ${roleClass}">${user.role}</span></td>
         <td>${joinedDate}</td>
       </tr>
