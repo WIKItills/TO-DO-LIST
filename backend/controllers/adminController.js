@@ -71,8 +71,35 @@ const getAllTasks = async (req, res) => {
   }
 };
 
+// @desc    Update a user's password (Admin only)
+// @route   PUT /api/admin/users/:id/password
+// @access  Private (Admin only)
+const updateUserPassword = async (req, res) => {
+  try {
+    const { password } = req.body;
+    if (!password || password.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.password = password;
+    await user.save();
+
+    const updatedUser = await User.findById(user._id);
+
+    res.status(200).json({ success: true, message: 'Password updated successfully', user: updatedUser });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 module.exports = {
   getDashboardStats,
   getAllUsers,
   getAllTasks,
+  updateUserPassword,
 };

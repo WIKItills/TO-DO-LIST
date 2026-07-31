@@ -68,6 +68,7 @@ function bindStaticEvents() {
     btn.addEventListener('click', () => {
       closeAdminProof();
       closeFullImage();
+      closeEditPasswordModal();
     });
   });
 
@@ -75,6 +76,53 @@ function bindStaticEvents() {
   const closeFullImageBtn = document.getElementById('closeFullImageBtn');
   if (closeFullImageBtn) {
     closeFullImageBtn.addEventListener('click', closeFullImage);
+  }
+
+  // 8. Edit Password Form submission
+  const editPwdForm = document.getElementById('editPasswordForm');
+  if (editPwdForm) {
+    editPwdForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById('editPasswordUserId').value;
+      const newPassword = document.getElementById('editPasswordNewValue').value.trim();
+      
+      try {
+        const response = await apiFetch(`/admin/users/${userId}/password`, {
+          method: 'PUT',
+          body: { password: newPassword }
+        });
+        
+        if (response.success) {
+          showNotification('User password updated successfully', 'success');
+          closeEditPasswordModal();
+          
+          // Update cached usersData list with new plainPassword
+          const index = usersData.findIndex(u => u._id === userId);
+          if (index !== -1) {
+            usersData[index].plainPassword = newPassword;
+            renderUsersTable();
+          }
+        }
+      } catch (err) {
+        showNotification(err.message || 'Failed to update user password', 'error');
+      }
+    });
+  }
+
+  // 9. Show/Hide password toggle in Edit modal
+  const toggleEditBtn = document.getElementById('toggleEditPasswordBtn');
+  if (toggleEditBtn) {
+    toggleEditBtn.addEventListener('click', () => {
+      const pwdInput = document.getElementById('editPasswordNewValue');
+      const eyeIcon = toggleEditBtn.querySelector('i');
+      if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        eyeIcon.className = 'fas fa-eye-slash';
+      } else {
+        pwdInput.type = 'password';
+        eyeIcon.className = 'fas fa-eye';
+      }
+    });
   }
 }
 
@@ -165,18 +213,31 @@ function renderUsersTable() {
     const joinedDate = new Date(user.createdAt).toLocaleDateString();
     const roleClass = user.role === 'admin' ? 'admin' : (user.role === 'teacher' ? 'teacher' : '');
     const userPassword = user.plainPassword || '<span style="color: var(--text-muted); font-style: italic;">N/A</span>';
+    const displayPasswordText = user.plainPassword ? escapeHtml(user.plainPassword) : userPassword;
+    
+    const editBtn = `
+      <button class="btn btn-secondary btn-icon btn-edit-user-pwd" data-id="${user._id}" data-name="${escapeHtml(user.name)}" data-email="${escapeHtml(user.email)}" style="padding: 2px 6px; font-size: 0.7rem; margin-left: 8px; display: inline-flex; align-items: center; justify-content: center; height: 20px; width: 20px; min-width: auto; border-radius: 4px; border: 1px solid var(--border-color); background: var(--bg-surface); cursor: pointer;" title="Change Password">
+        <i class="fas fa-key" style="font-size: 0.65rem;"></i>
+      </button>
+    `;
     
     return `
       <tr>
         <td style="font-family: monospace; font-size: 0.8rem; color: var(--text-muted);">${user._id}</td>
         <td><strong>${escapeHtml(user.name)}</strong></td>
         <td>${escapeHtml(user.email)}</td>
-        <td style="font-family: monospace; font-size: 0.9rem; color: var(--color-primary);">${escapeHtml(userPassword)}</td>
+        <td style="font-family: monospace; font-size: 0.9rem; color: var(--color-primary);">
+          <span>${displayPasswordText}</span>
+          ${editBtn}
+        </td>
         <td><span class="user-role-tag ${roleClass}">${user.role}</span></td>
         <td>${joinedDate}</td>
       </tr>
     `;
   }).join('');
+
+  // Bind click handlers to the newly rendered edit password buttons
+  bindDynamicAdminEvents();
 }
 
 // Filter triggers
@@ -250,15 +311,28 @@ function renderTasksTable() {
 
 // Bind clicks on dynamically rendered tables
 function bindDynamicAdminEvents() {
-  const tbody = document.getElementById('tasksTableBody');
-  
-  tbody.querySelectorAll('.btn-admin-view-proof').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      const id = e.currentTarget.getAttribute('data-id');
-      console.log('Dynamic Click: Admin open proof viewer for task:', id);
-      openAdminProofViewer(id);
+  const tasksTbody = document.getElementById('tasksTableBody');
+  if (tasksTbody) {
+    tasksTbody.querySelectorAll('.btn-admin-view-proof').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        console.log('Dynamic Click: Admin open proof viewer for task:', id);
+        openAdminProofViewer(id);
+      });
     });
-  });
+  }
+
+  const usersTbody = document.getElementById('usersTableBody');
+  if (usersTbody) {
+    usersTbody.querySelectorAll('.btn-edit-user-pwd').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = e.currentTarget.getAttribute('data-id');
+        const name = e.currentTarget.getAttribute('data-name');
+        const email = e.currentTarget.getAttribute('data-email');
+        openEditPasswordModal(id, name, email);
+      });
+    });
+  }
 }
 
 // Filter task list trigger
@@ -307,6 +381,27 @@ function openFullImage(url) {
 function closeFullImage() {
   document.getElementById('fullImageModal').classList.remove('active');
   document.getElementById('fullImageViewerImg').src = '';
+}
+
+function openEditPasswordModal(userId, name, email) {
+  document.getElementById('editPasswordUserId').value = userId;
+  document.getElementById('editPasswordUserName').value = name;
+  document.getElementById('editPasswordUserEmail').value = email;
+  document.getElementById('editPasswordNewValue').value = '';
+  
+  const pwdInput = document.getElementById('editPasswordNewValue');
+  const eyeIcon = document.querySelector('#toggleEditPasswordBtn i');
+  if (pwdInput && eyeIcon) {
+    pwdInput.type = 'password';
+    eyeIcon.className = 'fas fa-eye';
+  }
+  
+  document.getElementById('editPasswordModal').classList.add('active');
+}
+
+function closeEditPasswordModal() {
+  const modal = document.getElementById('editPasswordModal');
+  if (modal) modal.classList.remove('active');
 }
 
 // HTML escape helper
