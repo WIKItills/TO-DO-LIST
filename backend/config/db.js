@@ -1,6 +1,9 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
 
+// Increase query buffering timeout to 30s for slower connection handshakes
+mongoose.set('bufferTimeoutMS', 30000);
+
 const seedUsers = async () => {
   try {
     // 1. Ensure the specified default Admin account always exists and has the correct role
