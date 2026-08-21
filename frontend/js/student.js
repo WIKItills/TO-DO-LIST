@@ -98,6 +98,7 @@ async function loadTeachers() {
       editSelect.innerHTML = optionsHtml;
     }
   } catch (err) {
+    console.error('Error loading teachers:', err);
     showNotification('Failed to load teachers list', 'error');
   }
 }
@@ -114,6 +115,7 @@ async function loadTasks() {
     // Render list
     renderTasks();
   } catch (err) {
+    console.error('Error loading tasks:', err);
     showNotification('Failed to fetch tasks', 'error');
   }
 }
